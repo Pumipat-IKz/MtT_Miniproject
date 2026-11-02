@@ -22,9 +22,19 @@ uploaded_files = st.file_uploader(
 if uploaded_files:
     st.success(f"เลือกรูปแล้ว {len(uploaded_files)} รูป")
 
-    with st.expander("ดูรายการรูปภาพ"):
-        for file in uploaded_files:
-            st.write(f"🖼️ {file.name}")
+    # แสดงตัวอย่างรูปภาพ
+    st.subheader("ตัวอย่างรูปภาพ")
+
+    cols = st.columns(3)
+
+    for i, file in enumerate(uploaded_files):
+        image = Image.open(file)
+
+        with cols[i % 3]:
+            st.image(image, use_container_width=True)
+            st.caption(f"{i + 1}. {file.name}")
+
+    st.divider()
 
     if st.button("แปลงเป็น PDF", use_container_width=True):
         try:
@@ -35,6 +45,7 @@ if uploaded_files:
                 images.append(image)
 
             pdf_buffer = BytesIO()
+
             images[0].save(
                 pdf_buffer,
                 format="PDF",
@@ -54,6 +65,7 @@ if uploaded_files:
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาด: {e}")
+
 else:
     st.info("กรุณาอัปโหลดรูปภาพ JPG หรือ PNG เพื่อเริ่มต้น")
 
